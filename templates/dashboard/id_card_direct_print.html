@@ -14,13 +14,13 @@
             color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
-        
+
         /* Page setup */
         @page {
             size: auto;
             margin: 0;
         }
-        
+
         /* Body styles */
         body {
             font-family: 'Arial', sans-serif;
@@ -30,7 +30,7 @@
             align-items: center;
             min-height: 100vh;
         }
-        
+
         /* Print styles */
         @media print {
             body {
@@ -38,126 +38,154 @@
                 padding: 0 !important;
                 background: white !important;
             }
-            
+
             .no-print {
                 display: none !important;
             }
-            
+
             .id-card-container {
                 box-shadow: none !important;
                 border: none !important;
             }
         }
-        
+
         /* ID Card Container */
         .id-card-container {
             width: 4.2in;
-            height: 5.5in;
+            height: 5.8in; /* Adjusted height */
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: hidden;
             position: relative;
             background-color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-image: repeating-linear-gradient(45deg, rgba(200, 200, 200, 0.02) 0px, rgba(200, 200, 200, 0.02) 10px, transparent 10px, transparent 20px);
         }
-        
+
+        /* Security Border */
+        .id-card-container::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 1px dashed rgba(30, 64, 175, 0.2);
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         /* Card Header */
         .card-header {
             background-color: #1e40af !important;
             color: white !important;
-            padding: 12px;
+            padding: 10px 12px;
             text-align: center;
             position: relative;
             overflow: hidden;
+            z-index: 2;
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
-            height: 45px;
+            height: 50px;
             width: auto;
         }
-        
+
         .header-text {
             text-align: center;
             flex-grow: 1;
+            padding: 0 8px;
         }
-        
+
         .header-title {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
             margin-bottom: 2px;
         }
-        
+
         .header-subtitle {
-            font-size: 12px;
+            font-size: 13px;
             margin-bottom: 2px;
         }
-        
+
+        .header-team {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
         /* Card Body */
         .card-body {
-            padding: 15px;
+            padding: 12px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+            z-index: 2;
         }
-        
+
         .profile-picture {
-            width: 80px;
-            height: 80px;
+            width: 1.8in; /* Slightly reduced to fit more details */
+            height: 1.8in;
             border: 2px solid #1e40af;
             border-radius: 4px;
             overflow: hidden;
             margin-bottom: 10px;
         }
-        
+
         .profile-picture img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Changed from cover to contain to avoid cutting off face */
         }
-        
+
         .person-name {
             font-size: 18px;
             font-weight: bold;
             color: #1e40af;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-align: center;
         }
-        
+
         .person-position {
             font-size: 14px;
             color: #4b5563;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
         }
-        
+
         /* Person Details */
         .person-details {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        
+
         .person-details td {
-            padding: 4px 0;
-            font-size: 12px;
+            padding: 3px 0;
+            font-size: 13px;
         }
-        
+
         .detail-label {
             font-weight: bold;
             color: #4b5563;
             width: 40%;
+            padding-left: 10px;
         }
-        
+
         .detail-value {
             color: #111827;
+            padding-left: 5px;
         }
-        
+
         /* Card Footer */
         .card-footer {
             padding: 8px 15px;
@@ -166,45 +194,68 @@
             bottom: 0;
             width: 100%;
             border-top: 1px solid #e5e7eb;
+            z-index: 2;
         }
-        
+
         .footer-content {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
         }
-        
+
         .validity-info {
-            font-size: 10px;
+            font-size: 11px;
             color: #4b5563;
         }
-        
+
+        .validity-info .valid-id {
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 2px;
+        }
+
         .signature-section {
             text-align: center;
-            font-size: 10px;
+            font-size: 11px;
         }
-        
+
         .signature-line {
             width: 120px;
             border-top: 1px solid #4b5563;
             margin: 0 auto 2px;
         }
-        
+
         /* Watermark */
         .watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 60px;
+            font-size: 70px;
             opacity: 0.03;
             color: #000;
             white-space: nowrap;
             pointer-events: none;
             user-select: none;
             font-weight: bold;
+            z-index: 0;
         }
-        
+
+        /* LGU Background Logo */
+        .lgu-background-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: auto;
+            opacity: 0.07;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            filter: grayscale(100%);
+        }
+
         /* Controls */
         .controls {
             position: fixed;
@@ -213,7 +264,7 @@
             display: flex;
             gap: 10px;
         }
-        
+
         .control-button {
             padding: 8px 16px;
             background-color: #1e40af;
@@ -226,11 +277,11 @@
             align-items: center;
             gap: 6px;
         }
-        
+
         .control-button:hover {
             background-color: #1e3a8a;
         }
-        
+
         .control-button svg {
             width: 16px;
             height: 16px;
@@ -267,11 +318,11 @@
                 </div>
                 <img src="{{ drr_logo_url }}" alt="DRR Logo" class="logo">
             </div>
-            <div style="text-align: center; margin-top: 8px; font-weight: bold; font-size: 16px;">
+            <div class="header-team">
                 BARANGAY EMERGENCY RESPONSE TEAM
             </div>
         </div>
-        
+
         <!-- Card Body -->
         <div class="card-body">
             <!-- Profile Picture -->
@@ -284,11 +335,11 @@
                 </div>
                 {% endif %}
             </div>
-            
+
             <!-- Person Name and Position -->
             <div class="person-name">{{ person_name|upper }}</div>
             <div class="person-position">{{ position }}</div>
-            
+
             <!-- Person Details -->
             <table class="person-details">
                 <tr>
@@ -315,20 +366,20 @@
                     <td class="detail-label">Contact:</td>
                     <td class="detail-value">{{ contact_number }}</td>
                 </tr>
-               
+
             </table>
         </div>
-        
+
         <!-- Card Footer -->
         <div class="card-footer">
             <div class="footer-content">
                 <!-- Validity Information -->
                 <div class="validity-info">
-                    <div style="margin-bottom: 2px; font-weight: bold; color: #047857;">VALID ID</div>
+                    <div class="valid-id">VALID ID</div>
                     <div>Date Issued: {{ date_issued }}</div>
                     <div>Valid Until: {{ valid_until }}</div>
                 </div>
-                
+
                 <!-- Signature Section -->
                 <div class="signature-section">
                     <div class="signature-line"></div>
@@ -337,11 +388,27 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Watermark -->
         <div class="watermark">
             BARANGAY ID
         </div>
+
+        <!-- LGU Background Logo -->
+        <img src="{{ dumingag_logo_url }}" alt="LGU Background" class="lgu-background-logo">
+    </div>
+
+    <!-- Print Instructions -->
+    <div class="no-print" style="margin-top: 30px; max-width: 500px; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; background-color: #f9fafb;">
+        <h3 style="font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #1e40af;">Print Settings</h3>
+        <p style="margin-bottom: 10px;">For best results, use the following print settings:</p>
+        <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 15px;">
+            <li>Paper size: 4.2 x 5.8 inches (or closest available)</li>
+            <li>Scale: 100% (or "Actual size")</li>
+            <li>Margins: None</li>
+            <li>Background graphics: Enabled</li>
+            <li>Headers and footers: Off</li>
+        </ul>
     </div>
 
     <script>
