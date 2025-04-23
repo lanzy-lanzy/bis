@@ -140,4 +140,51 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the person select element
+        const personSelect = document.getElementById('id_person');
+        const idNumberInput = document.getElementById('id_id_number');
+
+        // Add event listener for change event
+        personSelect.addEventListener('change', function() {
+            const personId = this.value;
+
+            // Only proceed if a person is selected
+            if (personId) {
+                // Show loading indicator
+                idNumberInput.value = 'Generating...';
+
+                // Fetch person details and generate ID number
+                fetch(`/dashboard/id-cards/person-details/?person_id=${personId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Set the ID number field with the generated ID
+                        idNumberInput.value = data.id_number;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching person details:', error);
+                        idNumberInput.value = ''; // Clear on error
+                    });
+            }
+        });
+
+        // If person is already selected (e.g., when editing or from URL param), trigger the change event
+        if (personSelect.value) {
+            // Only auto-generate if the ID number field is empty
+            if (!idNumberInput.value) {
+                // Create and dispatch a change event
+                const event = new Event('change');
+                personSelect.dispatchEvent(event);
+            }
+        }
+    });
+</script>
+
 {% endblock %}

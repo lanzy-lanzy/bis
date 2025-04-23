@@ -328,6 +328,15 @@ def id_card_create(request):
         person = get_object_or_404(Person, pk=person_id)
         initial_data['person'] = person
 
+    # Set default values
+    initial_data['issued_by'] = 'Barangay Office'
+
+    # Set default dates
+    from datetime import date, timedelta
+    today = date.today()
+    initial_data['date_issued'] = today
+    initial_data['valid_until'] = today + timedelta(days=365)  # Valid for 1 year
+
     if request.method == 'POST':
         form = IdentificationCardForm(request.POST)
         if form.is_valid():
@@ -353,6 +362,43 @@ def id_card_create(request):
         context['subtitle'] = f'for {person.full_name()}'
 
     return render(request, 'dashboard/id_card_form.html', context)
+
+def get_person_details(request):
+    """API endpoint to get person details for ID card generation"""
+    person_id = request.GET.get('person_id')
+    if not person_id:
+        return JsonResponse({'error': 'Person ID is required'}, status=400)
+
+    try:
+        person = Person.objects.get(pk=person_id)
+
+        # Generate a unique ID number
+        from datetime import datetime
+        import random
+
+        # Get barangay code (first 3 letters)
+        barangay_code = person.barangay.name[:3].upper()
+
+        # Get person's initials
+        initials = f"{person.first_name[0]}{person.last_name[0]}".upper()
+
+        # Get current date in YYYYMMDD format
+        date_str = datetime.now().strftime('%Y%m%d')
+
+        # Generate random 4-digit number for uniqueness
+        random_digits = f"{random.randint(1000, 9999)}"
+
+        # Combine all parts to create the ID number
+        id_number = f"{barangay_code}-{initials}-{date_str}-{random_digits}"
+
+        # Return the person details and generated ID number
+        return JsonResponse({
+            'id_number': id_number,
+            'full_name': person.full_name(),
+            'barangay': person.barangay.name,
+        })
+    except Person.DoesNotExist:
+        return JsonResponse({'error': 'Person not found'}, status=404)
 
 def id_card_detail(request, pk):
     id_card = get_object_or_404(IdentificationCard, pk=pk)
