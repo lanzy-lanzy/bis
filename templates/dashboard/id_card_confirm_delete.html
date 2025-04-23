@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container max-w-md mx-auto py-8">
+    <!-- Back button -->
+    <div class="flex items-center mb-6">
+        <a href="{% url 'id_card_detail' id_card.pk %}" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to ID Card
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 bg-red-50 border-b border-red-100">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-red-800">Confirm Delete</h3>
+                </div>
+            </div>
+        </div>
+        <div class="px-6 py-4">
+            <div class="mb-4">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0">
+                        {% if id_card.person.profile_picture %}
+                            <img class="h-12 w-12 rounded-full" src="{{ id_card.person.profile_picture.url }}" alt="{{ id_card.person.full_name }}">
+                        {% else %}
+                            <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <span class="text-lg font-medium text-indigo-700">{{ id_card.person.first_name.0 }}{{ id_card.person.last_name.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-lg font-medium text-gray-900">{{ id_card.person.full_name }}</h4>
+                        <div class="text-sm text-gray-500">{{ id_card.person.barangay.name }}</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-gray-900">ID Number: <span class="font-mono">{{ id_card.id_number }}</span></h3>
+                            <div class="mt-1 text-sm text-gray-500">
+                                <p>Issued: {{ id_card.date_issued|date:"M d, Y" }} • Valid until: {{ id_card.valid_until|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Warning</h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <p>This action cannot be undone. This will permanently delete the ID card record from the database.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="post" class="mt-5">
+                {% csrf_token %}
+                <div class="flex justify-end space-x-3">
+                    <a href="{% url 'id_card_detail' id_card.pk %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Delete ID Card
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

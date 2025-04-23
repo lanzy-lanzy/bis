@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Print Styles -->
+    <style>
+        @media print {
+            /* Hide navigation elements when printing */
+            .sidebar, .bg-gradient-overlay, header {
+                display: none !important;
+            }
+            /* Make the main content take full width */
+            .flex-1 {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* Remove padding from main content */
+            #main-content {
+                padding: 0 !important;
+            }
+            /* Hide any buttons or controls not needed for printing */
+            .print-hide {
+                display: none !important;
+            }
+            /* Ensure the page breaks appropriately */
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+    <!-- htmx CDN -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen">
+    <div class="bg-gradient-overlay"></div>
+    <div class="flex min-h-screen">
+        {% include 'components/sidebar.html' %}
+        <div class="flex-1 flex flex-col">
+            {% include 'components/header.html' %}
+            <main class="flex-1 p-6" id="main-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    {% block extra_body %}{% endblock %}
+</body>
+</html>

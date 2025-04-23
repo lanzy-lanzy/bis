@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}Print ID Card{% endblock %}
+
+{% block extra_head %}
+<style>
+    @page {
+        size: 4.2in 5.5in;
+        margin: 0;
+    }
+
+    @media print {
+        /* Reset all margins and paddings */
+        body, html {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden !important;
+        }
+
+        /* Hide all non-printable elements */
+        .no-print, .sidebar, header, .bg-gradient-overlay, .print-page-bg, .container:not(.print-container) {
+            display: none !important;
+        }
+
+        /* Only show the print-container and its children */
+        .print-container, #id-card-container {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            height: 100vh !important;
+            width: 100vw !important;
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            max-width: none !important;
+        }
+
+        .id-card-printable {
+            box-shadow: none !important;
+            margin: 0 auto !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Hide print button during print */
+        button[onclick*="window.print"] {
+            display: none !important;
+        }
+    }
+
+    /* Animated background for the page */
+    .print-page-bg {
+        background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #dbeafe, #eff6ff);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="print-page-bg min-h-screen">
+    <div class="container mx-auto py-8">
+        <!-- Header Section (No Print) -->
+        <div class="no-print mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <a href="{% url 'id_card_detail' id_card_id %}" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to ID Card Details
+                </a>
+                <button id="print-btn" onclick="window.print()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Print ID Card
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                <h1 class="text-xl font-bold text-gray-900 mb-2">Print ID Card</h1>
+                <p class="text-gray-600">This page is optimized for printing. Click the Print button above or use Ctrl+P (Cmd+P on Mac) to print the ID card.</p>
+
+                <div class="mt-4 bg-blue-50 border-l-4 border-blue-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-blue-700">
+                                For best results, use the following print settings:
+                            </p>
+                            <ul class="mt-2 text-sm text-blue-700 list-disc list-inside">
+                                <li>Paper size: 4.2 × 5.5 inches (or closest available)</li>
+                                <li>Scale: 100% (or "Actual size")</li>
+                                <li>Margins: None</li>
+                                <li>Background graphics: Enabled</li>
+                                <li>Headers and footers: Off</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Printable Card Container -->
+        <div class="print-container flex justify-center items-center bg-white rounded-xl shadow-2xl p-8 mx-auto" style="max-width: 5in;">
+            <div id="id-card-container" class="flex justify-center items-center">
+                <!-- Card will be loaded here via AJAX -->
+                <div class="animate-pulse flex flex-col items-center justify-center" style="width: 4.2in; height: 5.5in;">
+                    <div class="rounded bg-gray-200 h-24 w-24 mb-4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                    <div class="h-2 bg-gray-200 rounded w-5/6 mb-2"></div>
+                    <div class="h-2 bg-gray-200 rounded w-5/6 mb-2"></div>
+                    <div class="h-2 bg-gray-200 rounded w-5/6 mb-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cardId = '{{ id_card_id }}';
+        const printBtn = document.getElementById('print-btn');
+        if (printBtn) printBtn.disabled = true;
+        if (cardId) {
+            // Fetch the card HTML
+            fetch(`/dashboard/id-cards/${cardId}/data/?format=html`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Log the response for debugging
+                    console.log('Response from server:', html);
+
+                    // Check if the response contains an error message
+                    if (html.includes('<div class="error">')) {
+                        throw new Error('Server returned an error in the HTML');
+                    }
+
+                    // Insert the HTML into the container
+                    document.getElementById('id-card-container').innerHTML = html;
+
+                    // Enable the print button after card loads
+                    if (printBtn) printBtn.disabled = false;
+
+                    // Log success message
+                    console.log('ID card loaded successfully');
+                })
+                .catch(error => {
+                    console.error('Error fetching ID card:', error);
+                    document.getElementById('id-card-container').innerHTML = `
+                        <div class="bg-red-50 p-4 rounded-md">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Error loading ID card</h3>
+                                    <div class="mt-2 text-sm text-red-700">
+                                        <p>There was an error loading the ID card. Please try again or contact support.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+<header class="bg-white shadow flex items-center justify-between px-6 py-4 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+        <button class="md:hidden" @click="$dispatch('toggle-sidebar')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <h1 class="text-2xl font-semibold text-blue-700">{% block header_title %}Dashboard{% endblock %}</h1>
+    </div>
+    <div class="flex items-center space-x-4">
+        <span class="text-gray-600">{{ request.user.username }}</span>
+        <img src="{% if request.user.profile.profile_picture %}{{ request.user.profile.profile_picture.url }}{% else %}/static/default-avatar.png{% endif %}" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-600 object-cover">
+    </div>
+</header>

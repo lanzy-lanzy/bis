@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printable-card, #printable-card * {
+            visibility: visible;
+        }
+        #printable-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-6">
+    <!-- Page Header with Gradient Background -->
+    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-md mb-6 p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-white">ID Cards Management</h1>
+                <p class="text-blue-100 mt-1">Issue, manage, and print identification cards</p>
+            </div>
+            <a href="{% url 'id_card_create' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Issue New ID Card
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-xl shadow-md mb-6 p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Search & Filter</h2>
+        <form method="post" class="grid grid-cols-1 md:grid-cols-3 gap-4" hx-post="{% url 'id_card_search' %}" hx-target="#id-cards-table" hx-trigger="submit, change from:#id-status-filter">
+            {% csrf_token %}
+            <div class="col-span-2">
+                <label for="id-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <div class="relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" name="search" id="id-search" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="Search by ID number or name...">
+                </div>
+            </div>
+            <div>
+                <label for="id-status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" id="id-status-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">All</option>
+                    <option value="active">Active</option>
+                    <option value="expired">Expired</option>
+                </select>
+            </div>
+            <div class="col-span-3 flex justify-end">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ID Cards Table -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h2 class="text-lg font-medium text-gray-900">ID Cards List</h2>
+        </div>
+        <div id="id-cards-table" class="overflow-x-auto">
+            {% include 'dashboard/includes/id_cards_table.html' %}
+        </div>
+    </div>
+</div>
+
+<!-- Print Modal (Hidden by default) -->
+<div id="print-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 hidden overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto my-8">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900">Print ID Card</h3>
+            <button type="button" class="text-gray-400 hover:text-gray-500" onclick="document.getElementById('print-modal').classList.add('hidden')">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="p-6">
+            <div id="printable-card" class="flex justify-center">
+                <!-- ID Card content will be loaded here -->
+            </div>
+            <div class="mt-6 flex justify-center">
+                <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="window.print()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Print ID Card
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Check if we need to auto-open the print modal
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if print_card_id %}
+        // Only open the modal if print_card_id is explicitly provided in the context
+        const printCardId = '{{ print_card_id }}';
+        if (printCardId && printCardId.trim() !== '') {
+            console.log('Auto-opening print modal for ID:', printCardId);
+            openPrintModal(printCardId);
+        }
+        {% endif %}
+    });
+
+    function openPrintModal(cardId) {
+        // Validate cardId
+        if (!cardId || cardId.trim() === '') {
+            console.error('Invalid card ID provided');
+            return;
+        }
+
+        // Show loading indicator
+        document.getElementById('printable-card').innerHTML = `
+            <div class="flex items-center justify-center p-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+                <span class="ml-3 text-gray-600">Loading...</span>
+            </div>
+        `;
+
+        // Show the modal immediately with loading indicator
+        document.getElementById('print-modal').classList.remove('hidden');
+
+        // Fetch the HTML directly from the template
+        fetch(`/dashboard/id-cards/${cardId}/data/?format=html`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Check if the response contains an error message
+                if (html.includes('<div class="error">')) {
+                    throw new Error('Server returned an error in the HTML');
+                }
+
+                // Insert the HTML into the modal
+                document.getElementById('printable-card').innerHTML = html;
+
+                // Log success message
+                console.log('ID card loaded successfully');
+            })
+            .catch(error => {
+                console.error('Error fetching ID card:', error);
+                document.getElementById('printable-card').innerHTML = `
+                    <div class="p-4 bg-red-50 text-red-700 rounded-md">
+                        <p class="font-medium">Error loading ID card</p>
+                        <p class="text-sm mt-1">Please try again or contact support.</p>
+                    </div>
+                `;
+            });
+    }
+</script>
+{% endblock %}

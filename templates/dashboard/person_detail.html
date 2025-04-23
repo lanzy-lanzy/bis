@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% block title %}Resident Details: {{ person.full_name }}{% endblock %}
+{% block header_title %}Resident Details{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{% url 'people' %}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Residents
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Profile Card -->
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4">
+                <div class="flex justify-center">
+                    {% if person.profile_picture %}
+                        <img class="h-32 w-32 rounded-full object-cover border-4 border-white" src="{{ person.profile_picture.url }}" alt="{{ person.full_name }}">
+                    {% else %}
+                        <div class="h-32 w-32 rounded-full bg-white flex items-center justify-center border-4 border-white">
+                            <span class="text-3xl font-bold text-blue-700">{{ person.first_name.0 }}{{ person.last_name.0 }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mt-4 text-center">
+                    <h2 class="text-xl font-bold text-white">{{ person.last_name }}, {{ person.first_name }} {{ person.middle_name }}</h2>
+                    {% if person.suffix %}
+                        <p class="text-blue-100">{{ person.suffix }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="flex justify-between mb-6">
+                    <span class="text-sm font-medium text-gray-500">Status</span>
+                    {% if person.is_active %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Active
+                        </span>
+                    {% else %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Inactive
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Barangay</span>
+                        <p class="mt-1">{{ person.barangay.name }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Age</span>
+                        <p class="mt-1">{{ person.age }} years old</p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Gender</span>
+                        <p class="mt-1">{{ person.get_gender_display }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Civil Status</span>
+                        <p class="mt-1">{{ person.get_civil_status_display }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Religion</span>
+                        <p class="mt-1">{{ person.religion|default:"Not specified" }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Contact Number</span>
+                        <p class="mt-1">{{ person.contact_number|default:"Not specified" }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex space-x-3">
+                    <a href="{% url 'person_update' pk=person.id %}" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Edit
+                    </a>
+                    <a href="{% url 'person_delete' pk=person.id %}" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Tabs -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100" x-data="{ activeTab: 'personal' }">
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                    <button @click="activeTab = 'personal'" :class="{ 'border-blue-500 text-blue-600': activeTab === 'personal', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'personal' }" class="w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm">
+                        Personal Information
+                    </button>
+                    <button @click="activeTab = 'address'" :class="{ 'border-blue-500 text-blue-600': activeTab === 'address', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'address' }" class="w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm">
+                        Address Information
+                    </button>
+                    <button @click="activeTab = 'id-cards'" :class="{ 'border-blue-500 text-blue-600': activeTab === 'id-cards', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'id-cards' }" class="w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm">
+                        ID Cards
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Personal Information Tab -->
+            <div x-show="activeTab === 'personal'" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                        <dl class="space-y-3">
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.last_name }}, {{ person.first_name }} {{ person.middle_name }} {% if person.suffix %}{{ person.suffix }}{% endif %}</dd>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Date of Birth</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.date_of_birth }}</dd>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Place of Birth</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.place_of_birth }}</dd>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Age</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.age }} years old</dd>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Gender</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.get_gender_display }}</dd>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Civil Status</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.get_civil_status_display }}</dd>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Religion</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.religion|default:"Not specified" }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                        <dl class="space-y-3">
+                            <div class="grid grid-cols-3 gap-4">
+                                <dt class="text-sm font-medium text-gray-500">Contact Number</dt>
+                                <dd class="text-sm text-gray-900 col-span-2">{{ person.contact_number|default:"Not specified" }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Information Tab -->
+            <div x-show="activeTab === 'address'" class="p-6" style="display: none;">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Address Details</h3>
+                <dl class="space-y-3">
+                    <div class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Address Line 1</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ person.address_line1 }}</dd>
+                    </div>
+
+                    {% if person.address_line2 %}
+                    <div class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Address Line 2</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ person.address_line2 }}</dd>
+                    </div>
+                    {% endif %}
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Barangay</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ person.barangay.name }}</dd>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Municipality</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ person.barangay.municipality }}</dd>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Province</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ person.barangay.province }}</dd>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Postal Code</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ person.postal_code }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <!-- ID Cards Tab -->
+            <div x-show="activeTab === 'id-cards'" class="p-6" style="display: none;">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">ID Cards</h3>
+                    <a href="{% url 'id_card_create' %}?person_id={{ person.id }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Issue New ID Card
+                    </a>
+                </div>
+
+                {% if id_cards %}
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">ID Number</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date Issued</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Valid Until</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                    <span class="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            {% for card in id_cards %}
+                            <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-blue-600 sm:pl-6">
+                                    <a href="{% url 'id_card_detail' pk=card.id %}" class="text-blue-600 hover:text-blue-900">
+                                        {{ card.id_number }}
+                                    </a>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ card.date_issued|date:"M d, Y" }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ card.valid_until|date:"M d, Y" }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    {% if card.is_valid %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Valid</span>
+                                    {% else %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Expired</span>
+                                    {% endif %}
+                                </td>
+                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                    <div class="flex justify-end space-x-2">
+                                        <a href="{% url 'id_card_detail' pk=card.id %}" class="text-blue-600 hover:text-blue-900" title="View Details">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'id_card_update' pk=card.id %}" class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'id_card_delete' pk=card.id %}?next=person" class="text-red-600 hover:text-red-900" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-8 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No ID Cards</h3>
+                    <p class="mt-1 text-sm text-gray-500">This resident doesn't have any ID cards issued yet.</p>
+                    <div class="mt-6">
+                        <a href="{% url 'id_card_create' %}?person_id={{ person.id }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Issue New ID Card
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

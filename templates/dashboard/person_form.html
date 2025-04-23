@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block header_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-blue-700">{{ title }}</h2>
+            <a href="{% url 'people' %}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Residents
+            </a>
+        </div>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" id="{{ form_id }}" class="p-6">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">There were errors with your submission:</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc pl-5 space-y-1">
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Personal Information Section -->
+            <div class="md:col-span-2 space-y-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-800 mb-4">Personal Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">First Name *</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.first_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.middle_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Middle Name</label>
+                            {{ form.middle_name }}
+                            {% if form.middle_name.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.middle_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Last Name *</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.last_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.suffix.id_for_label }}" class="block text-sm font-medium text-gray-700">Suffix</label>
+                            {{ form.suffix }}
+                            {% if form.suffix.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.suffix.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-gray-700">Date of Birth *</label>
+                            {{ form.date_of_birth }}
+                            {% if form.date_of_birth.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.date_of_birth.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.place_of_birth.id_for_label }}" class="block text-sm font-medium text-gray-700">Place of Birth *</label>
+                            {{ form.place_of_birth }}
+                            {% if form.place_of_birth.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.place_of_birth.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-gray-700">Gender *</label>
+                            {{ form.gender }}
+                            {% if form.gender.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.gender.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.civil_status.id_for_label }}" class="block text-sm font-medium text-gray-700">Civil Status *</label>
+                            {{ form.civil_status }}
+                            {% if form.civil_status.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.civil_status.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.religion.id_for_label }}" class="block text-sm font-medium text-gray-700">Religion</label>
+                            {{ form.religion }}
+                            {% if form.religion.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.religion.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.contact_number.id_for_label }}" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                            {{ form.contact_number }}
+                            {% if form.contact_number.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.contact_number.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Address Information Section -->
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-green-800 mb-4">Address Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <label for="{{ form.address_line1.id_for_label }}" class="block text-sm font-medium text-gray-700">Address Line 1 *</label>
+                            {{ form.address_line1 }}
+                            {% if form.address_line1.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.address_line1.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label for="{{ form.address_line2.id_for_label }}" class="block text-sm font-medium text-gray-700">Address Line 2</label>
+                            {{ form.address_line2 }}
+                            {% if form.address_line2.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.address_line2.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.barangay.id_for_label }}" class="block text-sm font-medium text-gray-700">Barangay *</label>
+                            {{ form.barangay }}
+                            {% if form.barangay.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.barangay.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-span-1">
+                            <label for="{{ form.postal_code.id_for_label }}" class="block text-sm font-medium text-gray-700">Postal Code *</label>
+                            {{ form.postal_code }}
+                            {% if form.postal_code.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.postal_code.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Picture and Status Section -->
+            <div class="md:col-span-1 space-y-6">
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-purple-800 mb-4">Profile Picture</h3>
+                    
+                    {% if not is_create and person.profile_picture %}
+                    <div class="mb-4 flex justify-center">
+                        <img src="{{ person.profile_picture.url }}" alt="{{ person.full_name }}" class="h-48 w-48 object-cover rounded-lg border-4 border-white shadow-md">
+                    </div>
+                    {% endif %}
+                    
+                    <div>
+                        <label for="{{ form.profile_picture.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            {% if is_create %}Upload Profile Picture{% else %}Change Profile Picture{% endif %}
+                        </label>
+                        {{ form.profile_picture }}
+                        {% if form.profile_picture.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.profile_picture.errors.0 }}</p>
+                        {% endif %}
+                        <p class="mt-1 text-xs text-gray-500">Upload a clear photo of the resident. Maximum file size: 5MB.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-amber-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-amber-800 mb-4">Status</h3>
+                    <div class="flex items-center">
+                        {{ form.is_active }}
+                        <label for="{{ form.is_active.id_for_label }}" class="ml-2 block text-sm font-medium text-gray-700">Active Resident</label>
+                    </div>
+                    {% if form.is_active.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.is_active.errors.0 }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-xs text-gray-500">Inactive residents will not appear in regular reports and searches.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 flex justify-end">
+            <a href="{% url 'people' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mr-3">
+                Cancel
+            </a>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                {% if is_create %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                {% endif %}
+                {{ submit_text }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

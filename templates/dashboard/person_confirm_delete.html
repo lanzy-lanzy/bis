@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Delete Resident: {{ person.full_name }}{% endblock %}
+{% block header_title %}Delete Resident{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="px-6 py-4 bg-red-50 border-b border-red-100">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-red-700">Delete Resident</h2>
+            <a href="{% url 'person_detail' pk=person.id %}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Resident Details
+            </a>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">Warning: This action cannot be undone</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <p>You are about to permanently delete this resident record. This will also delete all associated data, including ID cards and other records.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-6 border border-gray-200 rounded-lg mb-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Resident Information</h3>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ person.last_name }}, {{ person.first_name }} {{ person.middle_name }}</dd>
+                </div>
+                
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">Barangay</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ person.barangay.name }}</dd>
+                </div>
+                
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">Age</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ person.age }} years old</dd>
+                </div>
+                
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">Gender</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ person.get_gender_display }}</dd>
+                </div>
+                
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">Contact Number</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ person.contact_number|default:"Not specified" }}</dd>
+                </div>
+                
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">Status</dt>
+                    <dd class="mt-1 text-sm text-gray-900">
+                        {% if person.is_active %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                        {% else %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+        </div>
+        
+        <form method="post" class="mt-6">
+            {% csrf_token %}
+            <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-500">
+                    <p>Instead of deleting, consider marking the resident as inactive if they are no longer residing in the barangay.</p>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="{% url 'person_detail' pk=person.id %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Delete Permanently
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

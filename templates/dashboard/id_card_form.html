@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container max-w-2xl mx-auto py-8">
+    <!-- Back button and page title -->
+    <div class="flex items-center mb-6">
+        <a href="{% url 'id_cards' %}" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to ID Cards
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold text-blue-700">{{ title }}</h2>
+                    {% if subtitle %}<p class="mt-1 text-sm text-gray-600">{{ subtitle }}</p>{% endif %}
+                </div>
+                <div class="hidden md:block">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="p-6">
+            <form method="post" id="{{ form_id }}" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Person Selection -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label for="id_person" class="block text-sm font-medium text-gray-700">Person</label>
+                        <div class="mt-1">
+                            {{ form.person }}
+                        </div>
+                        {% if form.person.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.person.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ID Card Details -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="id_id_number" class="block text-sm font-medium text-gray-700">ID Number</label>
+                        <div class="mt-1">
+                            {{ form.id_number }}
+                        </div>
+                        {% if form.id_number.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.id_number.errors }}</p>
+                        {% endif %}
+                        <p class="mt-2 text-xs text-gray-500">Unique identifier for this ID card</p>
+                    </div>
+
+                    <div>
+                        <label for="id_issued_by" class="block text-sm font-medium text-gray-700">Issued By</label>
+                        <div class="mt-1">
+                            {{ form.issued_by }}
+                        </div>
+                        {% if form.issued_by.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.issued_by.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="id_date_issued" class="block text-sm font-medium text-gray-700">Date Issued</label>
+                        <div class="mt-1">
+                            {{ form.date_issued }}
+                        </div>
+                        {% if form.date_issued.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.date_issued.errors }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_valid_until" class="block text-sm font-medium text-gray-700">Valid Until</label>
+                        <div class="mt-1">
+                            {{ form.valid_until }}
+                        </div>
+                        {% if form.valid_until.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.valid_until.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <div class="flex items-center">
+                        {{ form.is_active }}
+                        <label for="id_is_active" class="ml-2 block text-sm font-medium text-gray-700">Active</label>
+                    </div>
+                    {% if form.is_active.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.is_active.errors }}</p>
+                    {% endif %}
+                    <p class="mt-2 text-xs text-gray-500">Uncheck this if the ID card is no longer valid</p>
+                </div>
+
+                <!-- Purpose -->
+                <div>
+                    <label for="id_purpose" class="block text-sm font-medium text-gray-700">Purpose</label>
+                    <div class="mt-1">
+                        {{ form.purpose }}
+                    </div>
+                    {% if form.purpose.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.purpose.errors }}</p>
+                    {% endif %}
+                    <p class="mt-2 text-xs text-gray-500">The purpose for issuing this ID card</p>
+                </div>
+
+                <!-- Remarks -->
+                <div>
+                    <label for="id_remarks" class="block text-sm font-medium text-gray-700">Remarks</label>
+                    <div class="mt-1">
+                        {{ form.remarks }}
+                    </div>
+                    {% if form.remarks.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.remarks.errors }}</p>
+                    {% endif %}
+                    <p class="mt-2 text-xs text-gray-500">Additional notes or comments about this ID card</p>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-5 border-t border-gray-200">
+                    <div class="flex justify-end">
+                        <a href="{% url 'id_cards' %}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Cancel
+                        </a>
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ submit_text }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

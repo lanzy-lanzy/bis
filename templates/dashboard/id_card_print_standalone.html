@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print ID Card</title>
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Print-specific styles */
+        @page {
+            size: auto;  /* Use the default page size */
+            margin: 0;
+        }
+
+        @media print {
+            /* Basic reset for all elements */
+            * {
+                -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+                color-adjust: exact !important; /* Firefox */
+                print-color-adjust: exact !important;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                width: 100% !important;
+                height: 100% !important;
+                display: block !important;
+                overflow: visible !important;
+            }
+
+            /* Hide all non-printable elements */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Center the ID card on the page */
+            .print-container {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                height: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: white !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            /* Ensure the ID card is visible and properly sized */
+            .id-card-printable {
+                box-shadow: none !important;
+                margin: 0 auto !important;
+                page-break-inside: avoid !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: relative !important;
+                z-index: 9999 !important;
+            }
+
+            /* Ensure all content inside the ID card is visible */
+            .id-card-printable * {
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            /* Fix display properties for specific elements */
+            .id-card-printable div {
+                display: block !important;
+            }
+
+            .id-card-printable img {
+                display: inline-block !important;
+            }
+
+            /* Ensure the card header background color prints */
+            .card-header {
+                background-color: #1e40af !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Force all images to be visible */
+            img {
+                visibility: visible !important;
+                display: inline-block !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* Container styles */
+        .print-container {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 2rem;
+            margin: 2rem;
+            max-width: 5in;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #4f46e5;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            color: #4338ca;
+        }
+
+        .back-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.25rem;
+        }
+
+        .print-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #4f46e5;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .print-button:hover {
+            background-color: #4338ca;
+        }
+
+        .print-button:disabled {
+            background-color: #a5b4fc;
+            cursor: not-allowed;
+        }
+
+        .print-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 4.2in;
+            height: 5.5in;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: 0.25rem solid #e5e7eb;
+            border-top-color: #4f46e5;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Instructions */
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 0.375rem;
+            width: 100%;
+        }
+
+        .instructions h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            font-size: 0.75rem;
+            color: #1e40af;
+        }
+
+        .instructions li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Error message */
+        .error-message {
+            padding: 1rem;
+            background-color: #fee2e2;
+            border-radius: 0.375rem;
+            width: 100%;
+        }
+
+        .error-message h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #b91c1c;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message p {
+            font-size: 0.75rem;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="print-container">
+        <!-- Controls (hidden when printing) -->
+        <div class="controls no-print">
+            <a href="{% url 'id_card_detail' id_card_id %}" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back
+            </a>
+            <button id="print-btn" onclick="window.print()" class="print-button" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print ID Card
+            </button>
+        </div>
+
+        <!-- ID Card Container -->
+        <div id="id-card-container">
+            <!-- Loading animation (will be replaced with the ID card) -->
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading ID card...</p>
+            </div>
+        </div>
+
+        <!-- Print Instructions (hidden when printing) -->
+        <div class="instructions no-print">
+            <h3>Print Settings</h3>
+            <p>For best results, use the following print settings:</p>
+            <ul>
+                <li>Paper size: 4.2 × 5.5 inches (or closest available)</li>
+                <li>Scale: 100% (or "Actual size")</li>
+                <li>Margins: None</li>
+                <li>Background graphics: Enabled</li>
+                <li>Headers and footers: Off</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Function to ensure images are loaded before printing
+        function waitForImagesToLoad() {
+            return new Promise((resolve) => {
+                const images = document.querySelectorAll('img');
+                let loadedImages = 0;
+                const totalImages = images.length;
+
+                // If there are no images, resolve immediately
+                if (totalImages === 0) {
+                    resolve();
+                    return;
+                }
+
+                // Check if all images are already loaded
+                const allLoaded = Array.from(images).every(img => img.complete);
+                if (allLoaded) {
+                    resolve();
+                    return;
+                }
+
+                // Wait for each image to load
+                images.forEach(img => {
+                    if (img.complete) {
+                        loadedImages++;
+                        if (loadedImages === totalImages) {
+                            resolve();
+                        }
+                    } else {
+                        img.addEventListener('load', () => {
+                            loadedImages++;
+                            if (loadedImages === totalImages) {
+                                resolve();
+                            }
+                        });
+
+                        // Handle error case too
+                        img.addEventListener('error', () => {
+                            loadedImages++;
+                            console.error('Failed to load image:', img.src);
+                            if (loadedImages === totalImages) {
+                                resolve();
+                            }
+                        });
+                    }
+                });
+
+                // Set a timeout in case some images never load
+                setTimeout(resolve, 3000);
+            });
+        }
+
+        // Function to prepare for printing
+        function preparePrint() {
+            console.log('Preparing to print...');
+
+            // Wait for images to load before printing
+            waitForImagesToLoad().then(() => {
+                console.log('All images loaded, ready to print');
+
+                // Enable the print button
+                const printBtn = document.getElementById('print-btn');
+                if (printBtn) printBtn.disabled = false;
+
+                // Auto-print after a delay to ensure everything is rendered
+                setTimeout(() => {
+                    console.log('Triggering print dialog...');
+                    window.print();
+                }, 1000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardId = '{{ id_card_id }}';
+            const printBtn = document.getElementById('print-btn');
+
+            if (cardId) {
+                console.log('Loading ID card with ID:', cardId);
+
+                // Fetch the card HTML
+                fetch(`/dashboard/id-cards/${cardId}/data/?format=html`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        console.log('Response received, length:', html.length);
+
+                        // Check if the response contains an error message
+                        if (html.includes('<div class="error">')) {
+                            throw new Error('Server returned an error in the HTML');
+                        }
+
+                        // Insert the HTML into the container
+                        document.getElementById('id-card-container').innerHTML = html;
+
+                        // Prepare for printing after content is loaded
+                        preparePrint();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching ID card:', error);
+                        document.getElementById('id-card-container').innerHTML = `
+                            <div class="error-message">
+                                <h3>Error Loading ID Card</h3>
+                                <p>${error.message}</p>
+                                <p>Please try again or contact support.</p>
+                            </div>
+                        `;
+                    });
+            } else {
+                console.error('No card ID provided');
+                document.getElementById('id-card-container').innerHTML = `
+                    <div class="error-message">
+                        <h3>Error Loading ID Card</h3>
+                        <p>No ID card identifier was provided.</p>
+                        <p>Please go back and try again.</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

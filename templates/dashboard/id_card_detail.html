@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+<style>
+    @page {
+        size: 4.2in 5.5in;
+        margin: 0;
+    }
+
+    @media print {
+        /* Hide everything except the printable card */
+        body * {
+            visibility: hidden;
+        }
+        #printable-card, #printable-card * {
+            visibility: visible;
+        }
+
+        /* Position the card properly on the page */
+        #printable-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Hide sidebar and other elements */
+        .sidebar, header, .bg-gradient-overlay, .print-modal {
+            display: none !important;
+        }
+
+        /* Remove decorative elements from the ID card */
+        .id-card-printable {
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 auto !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container max-w-4xl mx-auto py-8">
+    <!-- Back button and page title -->
+    <div class="flex items-center mb-6">
+        <a href="{% url 'id_cards' %}" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to ID Cards
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- ID Card Preview -->
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4 text-center">
+                    <div class="flex justify-center">
+                        {% if id_card.person.profile_picture %}
+                            <img class="h-24 w-24 rounded-full object-cover border-4 border-white" src="{{ id_card.person.profile_picture.url }}" alt="{{ id_card.person.full_name }}">
+                        {% else %}
+                            <div class="h-24 w-24 rounded-full bg-white flex items-center justify-center border-4 border-white">
+                                <span class="text-2xl font-bold text-blue-700">{{ id_card.person.first_name.0 }}{{ id_card.person.last_name.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3 text-white">
+                        <h3 class="text-lg font-bold">{{ id_card.person.full_name }}</h3>
+                        <p class="text-blue-100 text-sm">{{ id_card.person.barangay.name }}</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <div class="text-center mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {% if id_card.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                {% if id_card.is_active %}
+                                    <svg class="-ml-1 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+                                        <circle cx="4" cy="4" r="3" />
+                                    </svg>
+                                    Active
+                                {% else %}
+                                    <svg class="-ml-1 mr-1.5 h-2 w-2 text-red-400" fill="currentColor" viewBox="0 0 8 8">
+                                        <circle cx="4" cy="4" r="3" />
+                                    </svg>
+                                    Expired
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="text-center mb-2">
+                            <span class="text-xs text-gray-500">ID NUMBER</span>
+                            <div class="text-lg font-mono font-medium text-gray-900">{{ id_card.id_number }}</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4">
+                        <dl class="divide-y divide-gray-200">
+                            <div class="py-2 flex justify-between">
+                                <dt class="text-sm font-medium text-gray-500">Date Issued</dt>
+                                <dd class="text-sm text-gray-900">{{ id_card.date_issued|date:"M d, Y" }}</dd>
+                            </div>
+                            <div class="py-2 flex justify-between">
+                                <dt class="text-sm font-medium text-gray-500">Valid Until</dt>
+                                <dd class="text-sm text-gray-900">{{ id_card.valid_until|date:"M d, Y" }}</dd>
+                            </div>
+                            <div class="py-2 flex justify-between">
+                                <dt class="text-sm font-medium text-gray-500">Issued By</dt>
+                                <dd class="text-sm text-gray-900">{{ id_card.issued_by }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 space-y-3">
+                    <a href="{% url 'id_card_direct_print' id_card.pk %}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Print ID Card
+                    </a>
+                    <button type="button" onclick="openPrintModal('{{ id_card.pk }}')" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ID Card Details -->
+        <div class="md:col-span-2">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-900">ID Card Information</h2>
+                        <div class="flex space-x-2">
+                            <a href="{% url 'id_card_update' id_card.pk %}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit
+                            </a>
+                            <a href="{% url 'id_card_delete' id_card.pk %}" class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <!-- Card Holder Information -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Card Holder</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0">
+                                {% if id_card.person.profile_picture %}
+                                    <img class="h-12 w-12 rounded-full" src="{{ id_card.person.profile_picture.url }}" alt="{{ id_card.person.full_name }}">
+                                {% else %}
+                                    <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                                        <span class="text-lg font-medium text-indigo-700">{{ id_card.person.first_name.0 }}{{ id_card.person.last_name.0 }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900">{{ id_card.person.full_name }}</h4>
+                                <a href="{% url 'person_detail' id_card.person.pk %}" class="text-sm text-indigo-600 hover:text-indigo-900">View Profile</a>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Barangay</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.person.barangay.name }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Contact Number</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.person.contact_number|default:"Not provided" }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Date of Birth</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.person.date_of_birth|date:"F d, Y" }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Age</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.person.age }} years old</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ID Card Details -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Card Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">ID Number</div>
+                                <div class="mt-1 text-sm font-mono text-gray-900">{{ id_card.id_number }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Status</div>
+                                <div class="mt-1">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if id_card.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                        {% if id_card.is_active %}Active{% else %}Expired{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Date Issued</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.date_issued|date:"F d, Y" }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Valid Until</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.valid_until|date:"F d, Y" }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Issued By</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.issued_by }}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-500">Purpose</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.purpose|default:"Not specified" }}</div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <div class="text-sm font-medium text-gray-500">Remarks</div>
+                                <div class="mt-1 text-sm text-gray-900">{{ id_card.remarks|default:"No remarks" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Modal (Hidden by default) -->
+<div id="print-modal" class="print-modal fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 hidden overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto my-8">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center print-hide">
+            <h3 class="text-lg font-medium text-gray-900">Print ID Card</h3>
+            <button type="button" class="text-gray-400 hover:text-gray-500" onclick="document.getElementById('print-modal').classList.add('hidden')">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="p-6">
+            <div id="printable-card" class="flex justify-center">
+                <!-- ID Card content will be loaded here -->
+            </div>
+            <div class="mt-6 flex justify-center print-hide">
+                <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="window.print()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Print ID Card
+                </button>
+                <div class="ml-4 text-sm text-gray-500">
+                    <p>For best results, use the following print settings:</p>
+                    <ul class="list-disc list-inside mt-1 text-xs">
+                        <li>Paper size: 4.2 × 5.5 inches</li>
+                        <li>Scale: 100%</li>
+                        <li>Margins: None</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openPrintModal(cardId) {
+        // Show loading indicator
+        document.getElementById('printable-card').innerHTML = `
+            <div class="flex items-center justify-center p-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+                <span class="ml-3 text-gray-600">Loading...</span>
+            </div>
+        `;
+
+        // Show the modal immediately with loading indicator
+        document.getElementById('print-modal').classList.remove('hidden');
+
+        // Fetch the HTML directly from the template
+        fetch(`/dashboard/id-cards/${cardId}/data/?format=html`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Log the response for debugging
+                console.log('Response from server:', html);
+
+                // Check if the response contains an error message
+                if (html.includes('<div class="error">')) {
+                    throw new Error('Server returned an error in the HTML');
+                }
+
+                // Insert the HTML into the modal
+                document.getElementById('printable-card').innerHTML = html;
+
+                // Log success message
+                console.log('ID card loaded successfully');
+            })
+            .catch(error => {
+                console.error('Error fetching ID card:', error);
+                document.getElementById('printable-card').innerHTML = `
+                    <div class="p-4 bg-red-50 text-red-700 rounded-md">
+                        <p class="font-medium">Error loading ID card</p>
+                        <p class="text-sm mt-1">Please try again or contact support.</p>
+                    </div>
+                `;
+            });
+    }
+</script>
+{% endblock %}
