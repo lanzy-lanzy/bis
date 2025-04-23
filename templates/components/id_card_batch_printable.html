@@ -1,0 +1,774 @@
+{% comment %}
+This template is used for batch printing multiple ID cards on an A4 paper.
+It's designed to fit 2 ID cards (1x2 grid) on a single A4 page in landscape orientation for better readability.
+{% endcomment %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Print ID Cards</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+        }
+
+        /* A4 page container - landscape orientation */
+        .a4-page {
+            width: 297mm;
+            height: 210mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        /* Grid layout for 2 ID cards (1x2) in landscape */
+        .id-cards-grid {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-template-rows: 100%;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Individual ID card container */
+        .id-card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 5mm;
+            box-sizing: border-box;
+        }
+
+        /* ID card styles - maximized to fill available space */
+        .id-card {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background-color: white;
+            box-sizing: border-box;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Card header */
+        .card-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%) !important;
+            color: white !important;
+            padding: 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 18%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            z-index: 1;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Enhance header text */
+        .card-header h1 {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+
+        /* Add subtle pattern overlay to header */
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
+            background-size: 10px 10px;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content img {
+            height: 75px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-text {
+            text-align: center;
+        }
+
+        .header-text .republic {
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .header-text .municipality {
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .header-text .barangay {
+            font-size: 17px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .header-title {
+            margin-top: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        /* Card body */
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            height: 70%;
+            overflow: hidden;
+            position: relative;
+            flex: 1;
+            background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
+        }
+
+        .profile-picture {
+            width: 130px;
+            height: 130px;
+            position: relative;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+
+        .profile-picture-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 4px solid #2563eb;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-initials {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            font-weight: bold;
+            color: #1e40af;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .person-info {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .person-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e40af;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 1);
+            padding: 0 5px;
+            margin-bottom: 5px;
+        }
+
+        .person-position {
+            font-size: 14px;
+            color: #1e40af;
+            margin-top: 6px;
+            line-height: 1.2;
+            background-color: #dbeafe;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #93c5fd;
+        }
+
+        .person-details {
+            width: 100%;
+            padding: 0 15px;
+            margin-top: 8px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .details-table tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+
+        .details-table tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .details-table td {
+            padding: 6px 8px;
+            font-size: 13px;
+            line-height: 1.4;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .details-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .details-label {
+            font-weight: bold;
+            width: 35%;
+            color: #4b5563;
+            text-align: right;
+            padding-right: 10px;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .details-value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        /* Card footer */
+        .card-footer {
+            padding: 10px 15px;
+            background-color: #f3f4f6;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-top: 2px solid #dbeafe;
+            height: 18%;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 10px;
+        }
+
+        /* Add subtle pattern to footer */
+        .card-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 50% 50%, rgba(219, 234, 254, 0.15) 0%, rgba(255, 255, 255, 0) 60%);
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .validity-info {
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.5;
+            padding: 4px 0;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+
+        .validity-info strong {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .signature-section {
+            text-align: center;
+            padding: 4px 0;
+            min-width: 150px;
+            margin-right: 5px;
+        }
+
+        .signature-image {
+            width: 120px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 2px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+        }
+
+        .mayor-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1e3a8a;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+
+        .mayor-title {
+            font-size: 12px;
+            color: #4b5563;
+            line-height: 1.2;
+            font-style: italic;
+            font-weight: 500;
+            background-color: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 55px;
+            opacity: 0.06;
+            color: #1e40af !important;
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Print-specific styles */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+                padding: 0;
+            }
+
+            html, body {
+                width: 297mm;
+                height: 210mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden;
+            }
+
+            .a4-page {
+                margin: 0;
+                border: none;
+                width: 297mm;
+                height: 210mm;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            /* Ensure colors print correctly */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            .card-header {
+                background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+                color: white !important;
+            }
+
+            /* Ensure ID cards fill the available space */
+            .id-card-container {
+                padding: 1mm;
+            }
+
+            .id-card {
+                border: 0.5pt solid #e5e7eb;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+            }
+
+            /* Ensure profile picture prints correctly */
+            .profile-picture-container {
+                border-radius: 50% !important;
+                border: 2px solid #2563eb !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            /* Ensure header styles print */
+            .card-header {
+                background-color: #2563eb !important;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+                border-bottom: 2px solid #bfdbfe !important;
+            }
+
+            /* Ensure card shadow prints */
+            .id-card {
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+                border-radius: 12px !important;
+            }
+
+            /* Ensure profile picture styles print */
+            .profile-picture-container {
+                border: 4px solid #2563eb !important;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
+            }
+
+            /* Ensure person name prints */
+            .person-name {
+                color: #1e40af !important;
+                font-size: 20px !important;
+                font-weight: bold !important;
+                text-transform: uppercase !important;
+            }
+
+            /* Ensure position badge prints */
+            .person-position {
+                background-color: #dbeafe !important;
+                color: #1e40af !important;
+                border: 1px solid #93c5fd !important;
+                padding: 5px 15px !important;
+            }
+
+            /* Ensure details table styles print */
+            .details-table {
+                border-collapse: separate !important;
+                border-radius: 8px !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+                border: 1px solid #e5e7eb !important;
+            }
+
+            .details-table tr:nth-child(even) {
+                background-color: #f3f4f6 !important;
+            }
+
+            .details-label {
+                border-right: 1px solid #e5e7eb !important;
+            }
+
+            /* Ensure footer styles print */
+            .card-footer {
+                background-color: #f3f4f6 !important;
+                height: 18% !important;
+                padding: 10px 15px !important;
+                border-top: 2px solid #dbeafe !important;
+            }
+
+            /* Ensure footer content alignment */
+            .footer-content {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                height: 100% !important;
+            }
+
+            /* Ensure validity info prints */
+            .validity-info {
+                font-size: 13px !important;
+                line-height: 1.5 !important;
+                padding: 4px 0 !important;
+                margin-left: 5px !important;
+            }
+
+            /* Ensure signature section prints */
+            .signature-section {
+                text-align: center !important;
+                padding: 4px 0 !important;
+                min-width: 150px !important;
+                margin-right: 5px !important;
+            }
+
+            /* Ensure signature prints correctly */
+            .signature-image {
+                width: 120px !important;
+                height: 40px !important;
+                filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) !important;
+                margin-bottom: 2px !important;
+            }
+
+            .mayor-name {
+                font-size: 14px !important;
+                font-weight: bold !important;
+                color: #1e3a8a !important;
+            }
+
+            .mayor-title {
+                font-size: 12px !important;
+                background-color: #f3f4f6 !important;
+                padding: 2px 8px !important;
+                border-radius: 10px !important;
+                border: 1px solid #e5e7eb !important;
+            }
+
+            /* Ensure watermark prints */
+            .watermark {
+                opacity: 0.06 !important;
+                font-size: 55px !important;
+                letter-spacing: 2px !important;
+            }
+        }
+
+        /* Screen-only controls */
+        @media screen {
+            .print-controls {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                display: flex;
+                gap: 10px;
+                z-index: 1000;
+            }
+
+            .print-button {
+                background-color: #1e40af;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .print-button:hover {
+                background-color: #1e3a8a;
+            }
+
+            .back-button {
+                background-color: #6b7280;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .back-button:hover {
+                background-color: #4b5563;
+            }
+
+            .print-instructions {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background-color: white;
+                color: #1e40af;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                padding: 10px 15px;
+                font-size: 14px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                max-width: 300px;
+            }
+
+            .print-instructions h4 {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .print-instructions ul {
+                list-style-type: disc;
+                padding-left: 20px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Instructions (only visible on screen) -->
+    <div class="print-instructions no-print">
+        <h4>Print Settings</h4>
+        <ul>
+            <li>Paper size: A4</li>
+            <li>Orientation: Landscape</li>
+            <li>Scale: 100% (Actual size)</li>
+            <li>Margins: None</li>
+            <li>Background graphics: Enabled</li>
+            <li>Headers and footers: Off</li>
+            <li>Print 2 ID cards per page</li>
+            <li>Color: Print in color</li>
+            <li>For best results, use borderless printing if available</li>
+        </ul>
+    </div>
+
+    <!-- Print Controls (only visible on screen) -->
+    <div class="print-controls no-print">
+        <button onclick="window.location.href='{% url 'id_cards' %}'" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back
+        </button>
+        <button onclick="window.print()" class="print-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print ID Cards
+        </button>
+    </div>
+
+    {% for page in pages %}
+    <div class="a4-page">
+        <div class="id-cards-grid">
+            {% for card in page %}
+            <div class="id-card-container">
+                <div class="id-card">
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <div class="header-content">
+                            <img src="{% if card.dumingag_logo_url %}{{ card.dumingag_logo_url }}{% else %}/static/images/dumingag-logo.png{% endif %}" alt="Dumingag Logo">
+                            <div class="header-text">
+                                <div class="republic">Republic of the Philippines</div>
+                                <div class="municipality">Municipality of Dumingag</div>
+                                <div class="barangay">BARANGAY {{ card.barangay|upper }}</div>
+                            </div>
+                            <img src="{% if card.drr_logo_url %}{{ card.drr_logo_url }}{% else %}/static/images/drr-logo.png{% endif %}" alt="DRR Logo">
+                        </div>
+                        <div class="header-title">
+                            BARANGAY EMERGENCY RESPONSE TEAM
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Profile Picture -->
+                        <div class="profile-picture">
+                            <div class="profile-picture-container">
+                                {% if card.profile_picture %}
+                                    <img src="{{ card.profile_picture }}" alt="Profile">
+                                {% else %}
+                                    <div class="profile-initials">{{ card.initials }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Person Name and Position -->
+                        <div class="person-info">
+                            <div class="person-name">{{ card.person_name|upper }}</div>
+                            <div class="person-position">{{ card.position }}</div>
+                        </div>
+
+                        <!-- Person Details -->
+                        <div class="person-details">
+                            <table class="details-table">
+                                <!-- ID Information -->
+                                <tr>
+                                    <td class="details-label">ID Number:</td>
+                                    <td class="details-value">{{ card.id_number }}</td>
+                                </tr>
+
+                                <!-- Personal Information -->
+                                <tr>
+                                    <td class="details-label">Date of Birth:</td>
+                                    <td class="details-value">{{ card.date_of_birth }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="details-label">Age:</td>
+                                    <td class="details-value">{{ card.age }} years old</td>
+                                </tr>
+                                <tr>
+                                    <td class="details-label">Sex:</td>
+                                    <td class="details-value">{{ card.sex }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="details-label">Civil Status:</td>
+                                    <td class="details-value">{{ card.civil_status }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="details-label">Contact:</td>
+                                    <td class="details-value">{{ card.contact_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="details-label">Address:</td>
+                                    <td class="details-value">{{ card.barangay_address }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="card-footer">
+                        <div class="footer-content">
+                            <!-- Validity Information -->
+                            <div class="validity-info">
+                                <div>Date Issued: <strong>{{ card.date_issued }}</strong></div>
+                                <div>Valid Until: <strong>{{ card.valid_until }}</strong></div>
+                            </div>
+
+                            <!-- Signature Area -->
+                            <div class="signature-section">
+                                <img src="{% if card.static_url %}{{ card.static_url }}signed/auth-signed.png{% else %}/static/signed/auth-signed.png{% endif %}" alt="Authorized Signature" class="signature-image">
+                                <div class="mayor-name">Gerry T. Paglinawan</div>
+                                <div class="mayor-title">Municipal Mayor</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Watermark -->
+                    <div class="watermark">
+                        BARANGAY ID
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>

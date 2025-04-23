@@ -4,7 +4,7 @@ from .views import (
     people_list, person_search, person_create, person_detail, person_update, person_delete,
     barangay_list, barangay_search, barangay_create, barangay_detail, barangay_update, barangay_delete,
     id_card_list, id_card_search, id_card_create, id_card_detail, id_card_update, id_card_delete, id_card_data, id_card_print,
-    id_card_direct_print, get_person_details
+    id_card_direct_print, get_person_details, id_card_batch_print
 )
 
 urlpatterns = [
@@ -32,6 +32,7 @@ urlpatterns = [
     path('dashboard/id-cards/search/', id_card_search, name='id_card_search'),
     path('dashboard/id-cards/create/', id_card_create, name='id_card_create'),
     path('dashboard/id-cards/person-details/', get_person_details, name='get_person_details'),
+    path('dashboard/id-cards/batch-print/', id_card_batch_print, name='id_card_batch_print'),
     path('dashboard/id-cards/<int:pk>/', id_card_detail, name='id_card_detail'),
     path('dashboard/id-cards/<int:pk>/update/', id_card_update, name='id_card_update'),
     path('dashboard/id-cards/<int:pk>/delete/', id_card_delete, name='id_card_delete'),

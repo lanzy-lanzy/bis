@@ -10,75 +10,78 @@ It's designed to be included in other templates or loaded via AJAX.
 
 <div class="id-card-printable" style="width: 4.2in; height: 5.5in; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-family: 'Arial', sans-serif; position: relative; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: white !important; page-break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: block !important;">
     <!-- Card Header -->
-    <div class="card-header" style="background-color: #1e40af !important; color: white !important; padding: 12px; text-align: center; position: relative; overflow: hidden; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
+    <div class="card-header" style="background-color: #1e40af !important; color: white !important; padding: 15px; text-align: center; position: relative; overflow: hidden; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
         <!-- Header Content -->
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <img src="{% if dumingag_logo_url %}{{ dumingag_logo_url }}{% else %}/static/images/dumingag-logo.png{% endif %}" alt="Dumingag Logo" style="height: 45px; width: auto; object-fit: contain;">
+            <img src="{% if dumingag_logo_url %}{{ dumingag_logo_url }}{% else %}/static/images/dumingag-logo.png{% endif %}" alt="Dumingag Logo" style="height: 70px; width: auto; object-fit: contain;">
             <div>
-                <div style="font-size: 13px; font-weight: bold;">Republic of the Philippines</div>
-                <div style="font-size: 15px; font-weight: bold;">Municipality of Dumingag</div>
-                <div style="font-size: 17px; font-weight: bold;">BARANGAY {{ barangay|upper }}</div>
+                <div style="font-size: 15px; font-weight: bold;">Republic of the Philippines</div>
+                <div style="font-size: 17px; font-weight: bold;">Municipality of Dumingag</div>
+                <div style="font-size: 19px; font-weight: bold;">BARANGAY {{ barangay|upper }}</div>
             </div>
-            <img src="{% if drr_logo_url %}{{ drr_logo_url }}{% else %}/static/images/drr-logo.png{% endif %}" alt="DRR Logo" style="height: 45px; width: auto; object-fit: contain;">
+            <img src="{% if drr_logo_url %}{{ drr_logo_url }}{% else %}/static/images/drr-logo.png{% endif %}" alt="DRR Logo" style="height: 70px; width: auto; object-fit: contain;">
         </div>
-        <div style="margin-top: 10px; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
+        <div style="margin-top: 12px; font-size: 20px; font-weight: bold; letter-spacing: 0.5px;">
             BARANGAY EMERGENCY RESPONSE TEAM
         </div>
     </div>
 
     <!-- Card Body -->
-    <div class="card-body" style="padding: 25px; display: flex; flex-direction: column; align-items: center; background-color: white;">
+    <div class="card-body" style="padding: 25px 30px; display: flex; flex-direction: column; align-items: center; background-color: white; margin-top: 5px;">
         <!-- Profile Picture with Square Border (1x1 ratio) -->
-        <div style="width: 100px; height: 100px; position: relative; margin-bottom: 15px;">
+        <div style="width: 140px; height: 140px; position: relative; margin-bottom: 20px;">
             <!-- Square container with border -->
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid #2563eb; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 3px solid #2563eb; border-radius: 50%; overflow: hidden;">
                 {% if profile_picture %}
                     <img src="{{ profile_picture }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
                 {% else %}
-                    <div style="width: 100%; height: 100%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #2563eb;">{{ initials }}</div>
+                    <div style="width: 100%; height: 100%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: bold; color: #2563eb;">{{ initials }}</div>
                 {% endif %}
             </div>
         </div>
 
         <!-- Person Name and Position -->
-        <div style="text-align: center; margin-bottom: 10px;">
-            <div style="font-size: 20px; font-weight: bold; color: #1e40af;">{{ person_name|upper }}</div>
-            <div style="font-size: 14px; color: #4b5563; margin-top: 3px;">{{ position }}</div>
+        <div style="text-align: center; margin-bottom: 15px;">
+            <div style="font-size: 24px; font-weight: bold; color: #1e40af; letter-spacing: 0.5px;">{{ person_name|upper }}</div>
+            <div style="font-size: 16px; color: #4b5563; margin-top: 5px; font-weight: 600;">{{ position }}</div>
         </div>
 
         <!-- Person Details - Simple Table Layout -->
-        <div style="width: 100%; padding: 0 10px;">
+        <div style="width: 100%; padding: 0 15px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <!-- ID Information -->
                 <tr>
-                    <td style="padding: 3px 0; font-weight: bold; width: 35%; color: #4b5563; font-size: 12px;">ID Number:</td>
-                    <td style="padding: 3px 0; font-size: 12px; color: #1f2937;">{{ id_number }}</td>
+                    <td style="padding: 5px 0; font-weight: bold; width: 35%; color: #4b5563; font-size: 15px;">ID Number:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ id_number }}</td>
                 </tr>
 
                 <!-- Personal Information -->
                 <tr>
-                    <td style="padding: 3px 0; font-weight: bold; color: #4b5563; font-size: 12px;">Date of Birth:</td>
-                    <td style="padding: 3px 0; font-size: 12px; color: #1f2937;">{{ date_of_birth }}</td>
+                    <td style="padding: 5px 0; font-weight: bold; color: #4b5563; font-size: 15px;">Date of Birth:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ date_of_birth }}</td>
                 </tr>
                 <tr>
-                    <td style="padding: 3px 0; font-weight: bold; color: #4b5563; font-size: 12px;">Age:</td>
-                    <td style="padding: 3px 0; font-size: 12px; color: #1f2937;">{{ age }} years old</td>
+                    <td style="padding: 5px 0; font-weight: bold; color: #4b5563; font-size: 15px;">Age:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ age }} years old</td>
                 </tr>
                 <tr>
-                    <td style="padding: 3px 0; font-weight: bold; color: #4b5563; font-size: 12px;">Sex:</td>
-                    <td style="padding: 3px 0; font-size: 12px; color: #1f2937;">{{ sex }}</td>
+                    <td style="padding: 5px 0; font-weight: bold; color: #4b5563; font-size: 15px;">Sex:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ sex }}</td>
                 </tr>
                 <tr>
-                    <td style="padding: 3px 0; font-weight: bold; color: #4b5563; font-size: 12px;">Civil Status:</td>
-                    <td style="padding: 3px 0; font-size: 12px; color: #1f2937;">{{ civil_status }}</td>
+                    <td style="padding: 5px 0; font-weight: bold; color: #4b5563; font-size: 15px;">Civil Status:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ civil_status }}</td>
                 </tr>
 
                 <!-- Address and Contact -->
-
+                <tr>
+                    <td style="padding: 5px 0; font-weight: bold; color: #4b5563; font-size: 15px;">Address:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ barangay }}, Dumingag, Zamboanga del Sur</td>
+                </tr>
 
                 <tr>
-                    <td style="padding: 3px 0; font-weight: bold; color: #4b5563; font-size: 12px;">Contact:</td>
-                    <td style="padding: 3px 0; font-size: 12px; color: #1f2937;">{{ contact_number }}</td>
+                    <td style="padding: 5px 0; font-weight: bold; color: #4b5563; font-size: 15px;">Contact:</td>
+                    <td style="padding: 5px 0; font-size: 15px; color: #1f2937; font-weight: 500;">{{ contact_number }}</td>
                 </tr>
 
             </table>
@@ -86,25 +89,25 @@ It's designed to be included in other templates or loaded via AJAX.
     </div>
 
     <!-- Card Footer -->
-    <div class="card-footer" style="padding: 8px 15px; background-color: white !important; position: absolute; bottom: 0; width: 100%; border-top: 1px solid #e5e7eb; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
+    <div class="card-footer" style="padding: 15px 20px; margin-top: 15px; margin-bottom: 10px; background-color: white !important; position: absolute; bottom: 0; width: 100%; border-top: 2px solid #e5e7eb; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
             <!-- Validity Information -->
             <div>
-                <div style="font-size: 10px; color: #4b5563;">Date Issued: <strong>{{ date_issued }}</strong></div>
-                <div style="font-size: 10px; color: #4b5563;">Valid Until: <strong>{{ valid_until }}</strong></div>
+                <div style="font-size: 13px; color: #4b5563; margin-bottom: 3px;">Date Issued: <strong>{{ date_issued }}</strong></div>
+                <div style="font-size: 13px; color: #4b5563;">Valid Until: <strong>{{ valid_until }}</strong></div>
             </div>
 
             <!-- Signature Area -->
             <div style="text-align: center;">
-                <img src="{% if static_url %}{{ static_url }}signed/auth-signed.png{% else %}/static/signed/auth-signed.png{% endif %}" alt="Authorized Signature" style="width: 120px; height: 40px; object-fit: contain; margin-bottom: 2px;">
-                <div style="font-size: 11px; font-weight: bold; color: #1e3a8a; letter-spacing: 0.5px; margin-bottom: 1px; text-shadow: 0 0.5px 0.5px rgba(0, 0, 0, 0.1);">Gerry T. Paglinawan</div>
-                <div style="font-size: 10px; color: #4b5563;">Municipal Mayor</div>
+                <img src="{% if static_url %}{{ static_url }}signed/auth-signed.png{% else %}/static/signed/auth-signed.png{% endif %}" alt="Authorized Signature" style="width: 130px; height: 45px; object-fit: contain; margin-bottom: 3px;">
+                <div style="font-size: 14px; font-weight: bold; color: #1e3a8a; letter-spacing: 0.5px; margin-bottom: 2px; text-shadow: 0 0.5px 0.5px rgba(0, 0, 0, 0.1);">Gerry T. Paglinawan</div>
+                <div style="font-size: 12px; color: #4b5563; font-weight: 500;">Municipal Mayor</div>
             </div>
         </div>
     </div>
 
     <!-- Watermark -->
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 60px; opacity: 0.03; color: #000 !important; white-space: nowrap; pointer-events: none; user-select: none; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 70px; opacity: 0.04; color: #1e40af !important; white-space: nowrap; pointer-events: none; user-select: none; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
         BARANGAY ID
     </div>
 </div>
@@ -163,7 +166,9 @@ It's designed to be included in other templates or loaded via AJAX.
 
     /* Ensure the watermark is visible */
     [style*="transform: translate(-50%, -50%) rotate(-45deg)"] {
-        opacity: 0.03 !important;
+        opacity: 0.04 !important;
+        color: #1e40af !important;
+        font-size: 70px !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
@@ -253,6 +258,7 @@ It's designed to be included in other templates or loaded via AJAX.
         <li>Margins: None</li>
         <li>Background graphics: Enabled</li>
         <li>Headers and footers: Off</li>
+        <li>Color: Print in color</li>
     </ul>
 </div>
 

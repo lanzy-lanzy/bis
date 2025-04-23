@@ -73,12 +73,20 @@
 
     <!-- ID Cards Table -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
             <h2 class="text-lg font-medium text-gray-900">ID Cards List</h2>
+            <button id="batch-print-btn" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Batch Print Selected
+            </button>
         </div>
-        <div id="id-cards-table" class="overflow-x-auto">
-            {% include 'dashboard/includes/id_cards_table.html' %}
-        </div>
+        <form id="batch-print-form" action="{% url 'id_card_batch_print' %}" method="get">
+            <div id="id-cards-table" class="overflow-x-auto">
+                {% include 'dashboard/includes/id_cards_table.html' %}
+            </div>
+        </form>
     </div>
 </div>
 
@@ -112,6 +120,9 @@
 <script>
     // Check if we need to auto-open the print modal
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize batch printing functionality
+        initBatchPrinting();
+
         {% if print_card_id %}
         // Only open the modal if print_card_id is explicitly provided in the context
         const printCardId = '{{ print_card_id }}';
@@ -121,6 +132,70 @@
         }
         {% endif %}
     });
+
+    // Initialize batch printing functionality
+    function initBatchPrinting() {
+        const selectAllCheckbox = document.getElementById('select-all');
+        const cardCheckboxes = document.querySelectorAll('.card-checkbox');
+        const batchPrintBtn = document.getElementById('batch-print-btn');
+        const batchPrintForm = document.getElementById('batch-print-form');
+
+        // Handle select all checkbox
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                const isChecked = this.checked;
+                cardCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
+                updateBatchPrintButton();
+            });
+        }
+
+        // Handle individual checkboxes
+        cardCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateBatchPrintButton();
+
+                // Update select all checkbox state
+                if (selectAllCheckbox) {
+                    const allChecked = Array.from(cardCheckboxes).every(cb => cb.checked);
+                    const noneChecked = Array.from(cardCheckboxes).every(cb => !cb.checked);
+
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+                }
+            });
+        });
+
+        // Handle batch print button
+        if (batchPrintBtn) {
+            batchPrintBtn.addEventListener('click', function() {
+                if (getSelectedCardIds().length > 0) {
+                    batchPrintForm.submit();
+                }
+            });
+        }
+
+        // Initial update of batch print button state
+        updateBatchPrintButton();
+    }
+
+    // Get selected card IDs
+    function getSelectedCardIds() {
+        const cardCheckboxes = document.querySelectorAll('.card-checkbox:checked');
+        return Array.from(cardCheckboxes).map(checkbox => checkbox.value);
+    }
+
+    // Update batch print button state
+    function updateBatchPrintButton() {
+        const batchPrintBtn = document.getElementById('batch-print-btn');
+        const selectedIds = getSelectedCardIds();
+
+        if (batchPrintBtn) {
+            batchPrintBtn.disabled = selectedIds.length === 0;
+            batchPrintBtn.title = selectedIds.length === 0 ? 'Select ID cards to print' : `Print ${selectedIds.length} selected ID cards`;
+        }
+    }
 
     function openPrintModal(cardId) {
         // Validate cardId

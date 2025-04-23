@@ -597,3 +597,81 @@ def id_card_direct_print(request, pk):
     }
 
     return render(request, 'dashboard/id_card_direct_print.html', context)
+
+def id_card_batch_print(request):
+    """Batch print multiple ID cards on A4 paper (4 cards per page)"""
+    # Get the list of ID card IDs from the request
+    id_card_ids = request.GET.getlist('ids')
+
+    # If no IDs provided, redirect back to ID cards list
+    if not id_card_ids:
+        messages.warning(request, 'No ID cards selected for batch printing.')
+        return redirect('id_cards')
+
+    # Get all the selected ID cards
+    id_cards = IdentificationCard.objects.filter(pk__in=id_card_ids).select_related('person')
+
+    # If no cards found, redirect back with a message
+    if not id_cards.exists():
+        messages.warning(request, 'No valid ID cards found for batch printing.')
+        return redirect('id_cards')
+
+    # Get static file URLs
+    from django.templatetags.static import static
+
+    # Prepare data for each ID card
+    cards_data = []
+    for id_card in id_cards:
+        person = id_card.person
+
+        # Format the address
+        address = person.address_line1
+        if person.address_line2:
+            address += f", {person.address_line2}"
+
+        # Format the barangay address
+        barangay_address = f"{person.barangay.name}, Dumingag, Zamboanga del Sur"
+
+        # Get position or default to BERT Member
+        position = getattr(person, 'position', None) or 'BERT Member'
+
+        # Calculate age from date of birth
+        from datetime import date
+        today = date.today()
+        age = today.year - person.date_of_birth.year - ((today.month, today.day) < (person.date_of_birth.month, person.date_of_birth.day))
+
+        # Add card data
+        cards_data.append({
+            'id_number': id_card.id_number,
+            'person_name': person.full_name(),
+            'barangay': person.barangay.name,
+            'barangay_address': barangay_address,
+            'position': position,
+            'date_of_birth': person.date_of_birth.strftime('%B %d, %Y'),
+            'age': age,
+            'sex': getattr(person, 'get_gender_display', lambda: 'Not specified')(),
+            'civil_status': getattr(person, 'get_civil_status_display', lambda: 'Not specified')(),
+            'address': address,
+            'contact_number': person.contact_number or 'Not provided',
+            'date_issued': id_card.date_issued.strftime('%B %d, %Y'),
+            'valid_until': id_card.valid_until.strftime('%B %d, %Y'),
+            'is_valid': id_card.is_valid(),
+            'initials': f"{person.first_name[0]}{person.last_name[0]}",
+            'profile_picture': person.profile_picture.url if person.profile_picture else None,
+            'dumingag_logo_url': request.build_absolute_uri(static('images/dumingag-logo.png')),
+            'drr_logo_url': request.build_absolute_uri(static('images/drr-logo.png')),
+            'static_url': request.build_absolute_uri(static('')),
+        })
+
+    # Organize cards into pages (4 cards per page)
+    pages = []
+    for i in range(0, len(cards_data), 4):
+        pages.append(cards_data[i:i+4])
+
+    # If the last page has fewer than 4 cards, pad it with None values
+    if len(pages) > 0 and len(pages[-1]) < 4:
+        pages[-1].extend([None] * (4 - len(pages[-1])))
+
+    return render(request, 'components/id_card_batch_printable.html', {
+        'pages': pages,
+    })
