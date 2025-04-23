@@ -452,7 +452,8 @@ def id_card_data(request, pk):
         'weight': f"{getattr(person, 'weight', None)} kg" if getattr(person, 'weight', None) else None,
         # Add static file URLs
         'dumingag_logo_url': request.build_absolute_uri(static('images/dumingag-logo.png')),
-        'drr_logo_url': request.build_absolute_uri(static('images/drr-logo.png'))
+        'drr_logo_url': request.build_absolute_uri(static('images/drr-logo.png')),
+        'static_url': request.build_absolute_uri(static(''))
     }
 
     # If format=html is specified, render the HTML template
@@ -545,7 +546,8 @@ def id_card_direct_print(request, pk):
         'weight': f"{getattr(person, 'weight', None)} kg" if getattr(person, 'weight', None) else None,
         # Add static file URLs
         'dumingag_logo_url': request.build_absolute_uri(static('images/dumingag-logo.png')),
-        'drr_logo_url': request.build_absolute_uri(static('images/drr-logo.png'))
+        'drr_logo_url': request.build_absolute_uri(static('images/drr-logo.png')),
+        'static_url': request.build_absolute_uri(static(''))
     }
 
     return render(request, 'dashboard/id_card_direct_print.html', context)

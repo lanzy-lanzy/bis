@@ -86,25 +86,19 @@ It's designed to be included in other templates or loaded via AJAX.
     </div>
 
     <!-- Card Footer -->
-    <div class="card-footer" style="padding: 8px 15px; background-color: white !important; position: absolute; bottom: 0; width: 100%; border-top: 1px solid #e5e7eb; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
+    <div class="card-footer" style="padding: 12px 15px 8px; background-color: white !important; position: absolute; bottom: 0; width: 100%; border-top: 1px solid #e5e7eb; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
             <!-- Validity Information -->
             <div>
-                <div style="margin-bottom: 2px;">
-                    <span style="display: inline-block; padding: 1px 5px; border-radius: 2px; font-size: 10px; font-weight: bold; background-color: #059669; color: white;">
-                        VALID
-                    </span>
-                </div>
                 <div style="font-size: 10px; color: #4b5563;">Date Issued: <strong>{{ date_issued }}</strong></div>
                 <div style="font-size: 10px; color: #4b5563;">Valid Until: <strong>{{ valid_until }}</strong></div>
             </div>
 
             <!-- Signature Area -->
             <div style="text-align: center;">
-                <div style="border-top: 1px solid #000; padding-top: 2px; margin-top: 15px; width: 120px;">
-                    <div style="font-size: 10px; font-weight: bold; color: #1f2937;">Municipal Mayor</div>
-                    <div style="font-size: 9px; color: #6b7280;">Authorized Signature</div>
-                </div>
+                <img src="{% if static_url %}{{ static_url }}signed/auth-signed.png{% else %}/static/signed/auth-signed.png{% endif %}" alt="Authorized Signature" style="width: 150px; height: 55px; object-fit: contain; margin-bottom: 1px;">
+                <div style="font-size: 11px; font-weight: bold; color: #1e3a8a; letter-spacing: 0.5px; margin-bottom: 1px; text-shadow: 0 0.5px 0.5px rgba(0, 0, 0, 0.1);">Gerry T. Paglinawan</div>
+                <div style="font-size: 10px; color: #4b5563;">Municipal Mayor</div>
             </div>
         </div>
     </div>
