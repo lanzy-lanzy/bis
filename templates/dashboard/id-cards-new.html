@@ -75,14 +75,24 @@
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
             <h2 class="text-lg font-medium text-gray-900">ID Cards List</h2>
-            <button id="batch-print-btn" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                </svg>
-                Batch Print Selected
-            </button>
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center">
+                    <label for="print-layout" class="mr-2 text-sm font-medium text-gray-700">Layout:</label>
+                    <select id="print-layout" name="layout" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="3up">3 cards (landscape)</option>
+                        <option value="4up">4 cards (portrait)</option>
+                    </select>
+                </div>
+                <button id="batch-print-btn" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Batch Print Selected
+                </button>
+            </div>
         </div>
         <form id="batch-print-form" action="{% url 'id_card_batch_print' %}" method="get">
+            <input type="hidden" id="layout-input" name="layout" value="3up">
             <div id="id-cards-table" class="overflow-x-auto">
                 {% include 'dashboard/includes/id_cards_table.html' %}
             </div>
@@ -139,6 +149,8 @@
         const cardCheckboxes = document.querySelectorAll('.card-checkbox');
         const batchPrintBtn = document.getElementById('batch-print-btn');
         const batchPrintForm = document.getElementById('batch-print-form');
+        const printLayoutSelect = document.getElementById('print-layout');
+        const layoutInput = document.getElementById('layout-input');
 
         // Handle select all checkbox
         if (selectAllCheckbox) {
@@ -167,10 +179,21 @@
             });
         });
 
+        // Handle layout selection
+        if (printLayoutSelect && layoutInput) {
+            printLayoutSelect.addEventListener('change', function() {
+                layoutInput.value = this.value;
+            });
+        }
+
         // Handle batch print button
         if (batchPrintBtn) {
             batchPrintBtn.addEventListener('click', function() {
                 if (getSelectedCardIds().length > 0) {
+                    // Update the layout input with the current selection
+                    if (printLayoutSelect && layoutInput) {
+                        layoutInput.value = printLayoutSelect.value;
+                    }
                     batchPrintForm.submit();
                 }
             });

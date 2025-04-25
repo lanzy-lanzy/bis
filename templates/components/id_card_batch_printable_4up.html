@@ -1,6 +1,6 @@
 {% comment %}
 This template is used for batch printing multiple ID cards on an A4 paper.
-It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orientation for better readability and efficiency.
+It's designed to fit 4 ID cards (2x2 grid) on a single A4 page in portrait orientation for better readability and efficiency.
 {% endcomment %}
 
 <!DOCTYPE html>
@@ -24,10 +24,10 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             background-color: white;
         }
 
-        /* A4 page container - landscape orientation */
+        /* A4 page container - portrait orientation */
         .a4-page {
-            width: 297mm;
-            height: 210mm;
+            width: 210mm;
+            height: 297mm;
             margin: 0 auto;
             background: white;
             position: relative;
@@ -35,11 +35,11 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             overflow: hidden;
         }
 
-        /* Grid layout for 3 ID cards (1x3) in landscape */
+        /* Grid layout for 4 ID cards (2x2) in portrait */
         .id-cards-grid {
             display: grid;
-            grid-template-columns: 33.33% 33.33% 33.33%;
-            grid-template-rows: 100%;
+            grid-template-columns: 50% 50%;
+            grid-template-rows: 50% 50%;
             width: 100%;
             height: 100%;
         }
@@ -71,16 +71,14 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
 
         /* Card header */
         .card-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%) !important;
+            background: #1e40af !important;
             color: white !important;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             position: relative;
             overflow: hidden;
             height: 18%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             z-index: 1;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
         }
@@ -112,7 +110,7 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         }
 
         .header-content img {
-            height: 75px;
+            height: 60px;
             width: auto;
             object-fit: contain;
         }
@@ -122,26 +120,26 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         }
 
         .header-text .republic {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: bold;
             line-height: 1.2;
         }
 
         .header-text .municipality {
-            font-size: 15px;
+            font-size: 13px;
             font-weight: bold;
             line-height: 1.2;
         }
 
         .header-text .barangay {
-            font-size: 17px;
+            font-size: 15px;
             font-weight: bold;
             line-height: 1.2;
         }
 
         .header-title {
-            margin-top: 8px;
-            font-size: 17px;
+            margin-top: 6px;
+            font-size: 15px;
             font-weight: bold;
             letter-spacing: 0.5px;
             line-height: 1.2;
@@ -149,7 +147,7 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
 
         /* Card body */
         .card-body {
-            padding: 15px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -162,11 +160,11 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         }
 
         .profile-picture {
-            width: 140px;
-            height: 140px;
+            width: 100px;
+            height: 100px;
             position: relative;
-            margin-bottom: 15px;
-            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-top: 8px;
         }
 
         .profile-picture-container {
@@ -175,10 +173,9 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             left: 0;
             width: 100%;
             height: 100%;
-            border: 4px solid #2563eb;
+            border: 3px solid #2563eb;
             border-radius: 50%;
             overflow: hidden;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
         .profile-picture-container img {
@@ -190,182 +187,142 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         .profile-initials {
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            background: #dbeafe;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 42px;
+            font-size: 36px;
             font-weight: bold;
             color: #1e40af;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         .person-info {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .person-name {
-            font-size: 22px;
+            font-size: 16px;
             font-weight: bold;
             color: #1e40af;
             line-height: 1.2;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            text-shadow: 0 1px 1px rgba(255, 255, 255, 1);
             padding: 0 5px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .person-position {
-            font-size: 15px;
+            font-size: 12px;
             color: #1e40af;
-            margin-top: 6px;
+            margin-top: 2px;
             line-height: 1.2;
             background-color: #dbeafe;
-            padding: 6px 18px;
-            border-radius: 20px;
+            padding: 3px 10px;
+            border-radius: 12px;
             display: inline-block;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: normal;
             border: 1px solid #93c5fd;
         }
 
         .person-details {
             width: 100%;
-            padding: 0 15px;
-            margin-top: 8px;
+            padding: 0 10px;
+            margin-top: 6px;
         }
 
         .details-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            border-collapse: collapse;
             border: 1px solid #e5e7eb;
         }
 
-        .details-table tr:nth-child(even) {
-            background-color: #f3f4f6;
-        }
-
-        .details-table tr:nth-child(odd) {
-            background-color: #ffffff;
-        }
-
-        .details-table td {
-            padding: 7px 10px;
-            font-size: 14px;
-            line-height: 1.4;
+        .details-table tr {
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .details-table tr:last-child td {
+        .details-table tr:last-child {
             border-bottom: none;
         }
 
+        .details-table td {
+            padding: 3px 5px;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
         .details-label {
-            font-weight: bold;
-            width: 35%;
+            font-weight: 500;
+            width: 40%;
             color: #4b5563;
             text-align: right;
-            padding-right: 10px;
-            border-right: 1px solid #e5e7eb;
+            padding-right: 5px;
         }
 
         .details-value {
             color: #1f2937;
             font-weight: 500;
+            text-align: left;
         }
 
         /* Card footer */
         .card-footer {
-            padding: 6px 15px;
-            background-color: #f3f4f6;
+            padding: 5px 8px;
+            background-color: white;
             position: absolute;
             bottom: 0;
             width: 100%;
-            border-top: 2px solid #dbeafe;
-            height: 14%;
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
-            margin-top: 10px;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-
-        /* Add subtle pattern to footer */
-        .card-footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: radial-gradient(circle at 50% 50%, rgba(219, 234, 254, 0.15) 0%, rgba(255, 255, 255, 0) 60%);
-            opacity: 0.8;
-            z-index: -1;
+            height: 12%;
+            margin-top: 8px;
         }
 
         .footer-content {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             height: 100%;
-            gap: 5px;
         }
 
         .validity-info {
             font-size: 9px;
             color: #4b5563;
             line-height: 1.3;
-            padding: 2px 0;
-            font-weight: 500;
-            margin-left: 5px;
+            padding: 0;
+            font-weight: normal;
+            text-align: left;
         }
 
         .validity-info strong {
-            color: #1e3a8a;
-            font-weight: 600;
+            color: #1f2937;
+            font-weight: normal;
             font-size: 9px;
         }
 
         .signature-section {
             text-align: center;
-            padding: 1px 0;
-            min-width: 190px;
-            margin-right: 5px;
+            padding: 0;
         }
 
         .signature-image {
-            width: 190px;
-            height: 60px;
+            width: 120px;
+            height: 40px;
             object-fit: contain;
-            margin-bottom: 1px;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+            margin-bottom: 2px;
         }
 
         .mayor-name {
-            font-size: 13px;
+            font-size: 10px;
             font-weight: bold;
-            color: #1e3a8a;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
+            color: #1f2937;
+            margin-bottom: 0;
             line-height: 1.2;
         }
 
         .mayor-title {
-            font-size: 10px;
+            font-size: 9px;
             color: #4b5563;
             line-height: 1.2;
-            font-style: italic;
-            font-weight: 500;
-            background-color: #f3f4f6;
-            padding: 2px 8px;
-            border-radius: 8px;
-            display: inline-block;
-            border: 1px solid #e5e7eb;
+            font-weight: normal;
+            padding: 0;
         }
 
         /* Watermark */
@@ -374,7 +331,7 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 55px;
+            font-size: 45px;
             opacity: 0.06;
             color: #1e40af !important;
             white-space: nowrap;
@@ -389,14 +346,14 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         /* Print-specific styles */
         @media print {
             @page {
-                size: A4 landscape;
+                size: A4 portrait;
                 margin: 0;
                 padding: 0;
             }
 
             html, body {
-                width: 297mm;
-                height: 210mm;
+                width: 210mm;
+                height: 297mm;
                 margin: 0 !important;
                 padding: 0 !important;
                 overflow: hidden;
@@ -405,8 +362,8 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             .a4-page {
                 margin: 0;
                 border: none;
-                width: 297mm;
-                height: 210mm;
+                width: 210mm;
+                height: 297mm;
                 page-break-after: always;
                 page-break-inside: avoid;
             }
@@ -441,19 +398,16 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             .profile-picture-container {
                 border-radius: 50% !important;
                 border: 3px solid #2563eb !important;
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15) !important;
             }
 
             .profile-picture {
-                width: 140px !important;
-                height: 140px !important;
+                width: 100px !important;
+                height: 100px !important;
             }
 
             /* Ensure header styles print */
             .card-header {
-                background-color: #2563eb !important;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-                border-bottom: 2px solid #bfdbfe !important;
+                background-color: #1e40af !important;
                 border-top-left-radius: 12px !important;
                 border-top-right-radius: 12px !important;
             }
@@ -466,7 +420,7 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
 
             /* Ensure profile picture styles print */
             .profile-picture-container {
-                border: 4px solid #2563eb !important;
+                border: 3px solid #2563eb !important;
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
             }
 
@@ -479,10 +433,10 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
             /* Ensure person name prints */
             .person-name {
                 color: #1e40af !important;
-                font-size: 22px !important;
+                font-size: 16px !important;
                 font-weight: bold !important;
                 text-transform: uppercase !important;
-                margin-bottom: 8px !important;
+                margin-bottom: 4px !important;
             }
 
             /* Ensure position badge prints */
@@ -490,98 +444,109 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
                 background-color: #dbeafe !important;
                 color: #1e40af !important;
                 border: 1px solid #93c5fd !important;
-                padding: 6px 18px !important;
-                font-size: 15px !important;
+                padding: 3px 10px !important;
+                font-size: 12px !important;
+                font-weight: normal !important;
+                border-radius: 12px !important;
             }
 
             /* Ensure details table styles print */
             .details-table {
-                border-collapse: separate !important;
-                border-radius: 10px !important;
-                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12) !important;
+                border-collapse: collapse !important;
                 border: 1px solid #e5e7eb !important;
             }
 
-            .details-table tr:nth-child(even) {
-                background-color: #f3f4f6 !important;
+            .details-table tr {
+                border-bottom: 1px solid #e5e7eb !important;
+            }
+
+            .details-table tr:last-child {
+                border-bottom: none !important;
             }
 
             .details-table td {
-                padding: 7px 10px !important;
-                font-size: 14px !important;
+                padding: 3px 5px !important;
+                font-size: 12px !important;
+                line-height: 1.2 !important;
             }
 
             .details-label {
-                border-right: 1px solid #e5e7eb !important;
+                font-weight: 500 !important;
+                width: 40% !important;
+                color: #4b5563 !important;
+                text-align: right !important;
+                padding-right: 5px !important;
+            }
+
+            .details-value {
+                color: #1f2937 !important;
+                font-weight: 500 !important;
+                text-align: left !important;
             }
 
             /* Ensure footer styles print */
             .card-footer {
-                background-color: #f3f4f6 !important;
-                height: 14% !important;
-                padding: 6px 15px !important;
-                border-top: 2px solid #dbeafe !important;
-                border-bottom-left-radius: 12px !important;
-                border-bottom-right-radius: 12px !important;
+                background-color: white !important;
+                height: 12% !important;
+                padding: 5px 8px !important;
             }
 
             /* Ensure footer content alignment */
             .footer-content {
                 display: flex !important;
                 justify-content: space-between !important;
-                align-items: center !important;
+                align-items: flex-end !important;
                 height: 100% !important;
-                gap: 5px !important;
             }
 
             /* Ensure validity info prints */
             .validity-info {
                 font-size: 9px !important;
                 line-height: 1.3 !important;
-                padding: 2px 0 !important;
-                margin-left: 5px !important;
+                padding: 0 !important;
+                font-weight: normal !important;
+                text-align: left !important;
             }
 
             .validity-info strong {
                 font-size: 9px !important;
-                color: #1e3a8a !important;
+                color: #1f2937 !important;
+                font-weight: normal !important;
             }
 
             /* Ensure signature section prints */
             .signature-section {
                 text-align: center !important;
-                padding: 1px 0 !important;
-                min-width: 190px !important;
-                margin-right: 5px !important;
+                padding: 0 !important;
             }
 
             /* Ensure signature prints correctly */
             .signature-image {
-                width: 190px !important;
-                height: 60px !important;
-                filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) !important;
-                margin-bottom: 1px !important;
-            }
-
-            .mayor-name {
-                font-size: 13px !important;
-                font-weight: bold !important;
-                color: #1e3a8a !important;
+                width: 120px !important;
+                height: 40px !important;
                 margin-bottom: 2px !important;
             }
 
-            .mayor-title {
+            .mayor-name {
                 font-size: 10px !important;
-                background-color: #f3f4f6 !important;
-                padding: 2px 8px !important;
-                border-radius: 8px !important;
-                border: 1px solid #e5e7eb !important;
+                font-weight: bold !important;
+                color: #1f2937 !important;
+                margin-bottom: 0 !important;
+                line-height: 1.2 !important;
+            }
+
+            .mayor-title {
+                font-size: 9px !important;
+                color: #4b5563 !important;
+                line-height: 1.2 !important;
+                font-weight: normal !important;
+                padding: 0 !important;
             }
 
             /* Ensure watermark prints */
             .watermark {
                 opacity: 0.06 !important;
-                font-size: 55px !important;
+                font-size: 45px !important;
                 letter-spacing: 2px !important;
             }
         }
@@ -669,12 +634,12 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         <h4>Print Settings</h4>
         <ul>
             <li>Paper size: A4</li>
-            <li>Orientation: Landscape</li>
+            <li>Orientation: Portrait</li>
             <li>Scale: 100% (Actual size)</li>
             <li>Margins: None</li>
             <li>Background graphics: Enabled</li>
             <li>Headers and footers: Off</li>
-            <li>Print 3 ID cards per page</li>
+            <li>Print 4 ID cards per page</li>
             <li>Color: Print in color</li>
             <li>For best results, use borderless printing if available</li>
         </ul>
@@ -703,6 +668,7 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
         <div class="id-cards-grid">
             {% for card in page %}
             <div class="id-card-container">
+                {% if card %}
                 <div class="id-card">
                     <!-- Card Header -->
                     <div class="card-header">
@@ -769,7 +735,6 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
                                     <td class="details-label">Contact:</td>
                                     <td class="details-value">{{ card.contact_number }}</td>
                                 </tr>
-
                             </table>
                         </div>
                     </div>
@@ -797,6 +762,7 @@ It's designed to fit 3 ID cards (1x3 grid) on a single A4 page in landscape orie
                         BARANGAY ID
                     </div>
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>

@@ -599,9 +599,12 @@ def id_card_direct_print(request, pk):
     return render(request, 'dashboard/id_card_direct_print.html', context)
 
 def id_card_batch_print(request):
-    """Batch print multiple ID cards on A4 paper (4 cards per page)"""
+    """Batch print multiple ID cards on A4 paper"""
     # Get the list of ID card IDs from the request
     id_card_ids = request.GET.getlist('ids')
+
+    # Check if 4-up layout is requested
+    layout = request.GET.get('layout', '3up')  # Default to 3-up layout
 
     # If no IDs provided, redirect back to ID cards list
     if not id_card_ids:
@@ -663,15 +666,25 @@ def id_card_batch_print(request):
             'static_url': request.build_absolute_uri(static('')),
         })
 
-    # Organize cards into pages (4 cards per page)
+    # Determine which template and cards per page to use based on layout
+    if layout == '4up':
+        # 4-up layout (2x2 grid in portrait orientation)
+        cards_per_page = 4
+        template_name = 'components/id_card_batch_printable_4up.html'
+    else:
+        # 3-up layout (1x3 grid in landscape orientation)
+        cards_per_page = 3
+        template_name = 'components/id_card_batch_printable.html'
+
+    # Organize cards into pages
     pages = []
-    for i in range(0, len(cards_data), 4):
-        pages.append(cards_data[i:i+4])
+    for i in range(0, len(cards_data), cards_per_page):
+        pages.append(cards_data[i:i+cards_per_page])
 
-    # If the last page has fewer than 4 cards, pad it with None values
-    if len(pages) > 0 and len(pages[-1]) < 4:
-        pages[-1].extend([None] * (4 - len(pages[-1])))
+    # If the last page has fewer than cards_per_page cards, pad it with None values
+    if len(pages) > 0 and len(pages[-1]) < cards_per_page:
+        pages[-1].extend([None] * (cards_per_page - len(pages[-1])))
 
-    return render(request, 'components/id_card_batch_printable.html', {
+    return render(request, template_name, {
         'pages': pages,
     })
